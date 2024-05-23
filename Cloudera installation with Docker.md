@@ -53,3 +53,7 @@ Since the Spark version in this CDH installation is 1.x.x, which does not suppor
 * ZooKeeper is used for service distribution and leader election in Flume, which is necessary for its distributed operation.
 ### Step 9: Start the cluster and wait until all services are in the all-up-and-running state
 ### Step 10: Use the VM's Public/External IP address to access Cloudera HUE through port 8888
+
+# Clone Git Repository
+Press Ctrl+P + Q to detach from the Docker container, leaving it running in the background.
+git clone 
