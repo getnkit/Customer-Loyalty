@@ -30,16 +30,16 @@ Docker should now be installed, the daemon started, and the process enabled to s
 ```bash
 sudo systemctl status docker
 ```
-### Step 2: Use the following command to pull the Docker image for use on your VM
+### Step 2: Pull the Docker image for use on your VM
 ```bash
 sudo docker pull mikelemikelo/cloudera-spark:latest
 ``` 
-### Step 3: Use the following command to quickly create and run a Cloudera Spark environment on Docker
+### Step 3: Quickly create and run a Cloudera Spark environment on Docker
 ```
 sudo docker run --hostname=quickstart.cloudera --privileged=true -it -p 8888:8888 -p 8080:8080 -p 7180:7180 \
 -p 88:88/udp -p 88:88 mikelemikelo/cloudera-spark:latest /usr/bin/docker-quickstart-light
 ```
-### Step 4: Use the following command to start Cloudera Manager
+### Step 4: Start Cloudera Manager
 ```
 sudo /home/cloudera/cloudera-manager --express && service ntpd start
 ```
@@ -55,5 +55,24 @@ Since the Spark version in this CDH installation is 1.x.x, which does not suppor
 ### Step 10: Use the VM's Public/External IP address to access Cloudera HUE through port 8888
 
 # Clone Git Repository
-Press Ctrl+P + Q to detach from the Docker container, leaving it running in the background.
-git clone 
+Press Ctrl+P+Q to detach from the Docker container, leaving it running in the background
+Clone Git Repository
+```
+git clone https://github.com/getnkit/Customer-Loyalty.git
+```
+Check the container ID of Cloudera:
+```
+docker container ls
+```
+Copy the files from the Git repository into the Cloudera Docker container:
+```
+docker cp Customer-Loyalty <container_id>:/
+```
+Re-enter or re-attach to the container:
+```
+docker exec -it <container_id> /bin/bash
+```
+```
+cd ../..
+```
+Finally, the copied files will be found!
