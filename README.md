@@ -14,7 +14,8 @@ Apache Flume is used to collect real-time data from a shell script that generate
 
 It consists of Hive and HBase. Hive is used to combine data from the batch layer and speed layer by creating a new table called the ```loyalty``` table that joins data from the ```customers_cln``` and ```transactions_cln``` tables. HBase is used to store data from the speed layer that requires fast random read/write access.
 
-In the case of needing to update the ```loyalty``` table with new data, utilizing a workflow tool such as Apache Oozie to efficiently manage these processes. This tool can schedule workflows to run daily, weekly, or at desired intervals to execute Hive scripts that append new data to the existing structure of the ```loyalty``` table, aligning with the changes in the ```customers_cln``` and ```transactions_cln``` tables. This ensures that the data in this table remains accurate and ready for further analysis.
+To update the ```loyalty``` table with new data, utilize a workflow scheduling tool like Apache Oozie to create repeatable workflows. It schedules workflows to execute Hive scripts appending new data to the existing ```loyalty``` table structure, aligning with changes in the ```customers_cln``` and ```transactions_cln``` tables.
+
 ## About Dataset
 This dataset consists of customer data from a beverage shop such as names, dates of birth, and contact information. Additionally, this project generates real-time order data for each customer to simulate what orders each customer places and when. All of this data is collected for analysis and customer segmentation by calculating loyalty card point accumulation and offering promotions to customers accordingly.
 ## Architecture
