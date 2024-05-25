@@ -43,7 +43,7 @@ sudo docker run --hostname=quickstart.cloudera --privileged=true -it -p 8888:888
 ```
 sudo /home/cloudera/cloudera-manager --express && service ntpd start
 ```
-## Configure Cloudera Manager
+# Configure Cloudera Manager
 ### Step 1: Use the VM's Public/External IP address to access Cloudera Manager through port 7180
 ### Step 2: Go to the Hive service and set the configuration of Spark on YARN Service to none
 To simplify the system, as using Hive on Spark is more complex than using MapReduce due to the multiple components involved.
