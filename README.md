@@ -12,38 +12,36 @@ Apache Flume is used to collect real-time data from a shell script that generate
 
 **Serving Layer**
 
-It consists of Hive and HBase. Hive is used to combine data from the batch layer and speed layer by creating a new table called the ```loyalty``` table that joins data from the ```customers_cln``` table and ```transactions_cln``` table. HBase is used to store data from the speed layer that requires fast random read/write access.
+It consists of Hive and HBase. Hive is used to combine data from the batch layer and speed layer by creating a new table called the ```loyalty``` table that joins data from the ```customers_cln``` and ```transactions_cln``` tables. HBase is used to store data from the speed layer that requires fast random read/write access.
 
-To update the ```loyalty``` table with new data, utilize a workflow scheduling tool like Apache Oozie to create repeatable workflows. It schedules workflows to execute Hive scripts appending new data to the existing ```loyalty``` table structure, aligning with changes in the ```customers_cln``` table and ```transactions_cln``` table.
+To update the ```loyalty``` table with new data, utilize a workflow scheduling tool like Apache Oozie to create repeatable workflows. It schedules workflows to execute Hive scripts appending new data to the existing ```loyalty``` table structure, aligning with changes in the ```customers_cln``` and ```transactions_cln``` tables.
 
 ## About Dataset
 This dataset consists of customer data from a beverage shop such as names, dates of birth, and contact information. Additionally, this project generates real-time order data for each customer to simulate what orders each customer places and when. All of this data is collected for analysis and customer segmentation by calculating loyalty card point accumulation and offering promotions to customers accordingly.
 ## Architecture
 ![image](https://github.com/getnkit/Customer-Loyalty/blob/31660049d2b3cc665834784ff39ad75971690cc2/images/Data%20Architecture.png)
 ## Implementation
-### Step 1:
-1. สร้าง file ที่จำเป็นต่อการเริ่มต้นทำโปรเจค ได้แก่ Shell Script, CONF File, และ Python Source File จากนั้น push a file to Git Repository
-1.1. Shell Script: เขียนขึ้นเพื่อสร้างข้อมูลคำสั่งซื้อสินค้าสมมติขึ้นมา โดยจะสุ่มเลือก ID ลูกค้า, รายการเครื่องดื่ม, และเวลาที่สั่ง (timestamp) จากนั้นบันทึกข้อมูลดังกล่าวลงในไฟล์ใน directory (HDFS และ HBase) ทุกๆ 30 วินาที.
-1.2. CONF File: กำหนดค่าคอนฟิกสำหรับ Apache Flume โดยกำหนดข้อมูล channel, source, และ sink สำหรับ agent ซึ่ง source จะรับไฟล์จาก spool directory และส่งข้อมูลไปยัง channel ที่เชื่อมต่อกับ sink เพื่อบันทึกข้อมูลลงใน HDFS และ HBase
-1.3: spark_sql.py: โค้ดนี้ทำการดึงข้อมูลลูกค้าจาก Hive table ```customers``` นำมาทำการทำความสะอาดและจัดรูปแบบข้อมูล และเขียนผลลัพธ์ลงใน HDFS โดยใช้ PySpark.
-1.4: spark_streaming.py: โค้ดนี้ทำการอ่านข้อมูลแบบสตรีมจาก structured text files (log files) ที่สร้างขึ้นโดย shell script จากนั้นทำการประมวลผลข้อมูล เลือกคอลัมน์ที่ต้องการ และเขียนข้อมูลในรูปแบบไฟล์ Parquet โดยใช้ Spark Structured Streaming ซึ่งจะมีข้อมูลเพิ่มเข้าไปใหม่ในไฟล์นี้เรื่อยๆ 
-2. สร้าง compute engine (VM) บน GCP เพื่อติดตั้ง Cloudera Docker Container สำหรับการใช้งาน Cloudera manager และ Cloudera Hue
-3. Install and running Cloudera Docker Container on Ubuntu 20.04, Configure Cloudera Manager, และ Clone Git Repository ตามที่ระบุไว้ในไฟล์ Cloudera installation with Docker.md
-4. import ไฟล์ csv ที่จะทำหน้าที่เป็น source systems ของ batch layer ลงบน HDFS
-5. สร้าง path สำหรับ Flume sink ของ HDFS เป็น directory และ Flume sink ของ hbase เป็น table
-6. เรียกใช้ Flume agent เพื่อส่งข้อมูลไปยัง HDFS และ HBase
-nohup & ใช้เพื่อป้องกันไม่ให้ background process หยุดทำงาน แม้ว่าจะออกจากเชลล์หรือปิดเทอร์มินัลลงไปแล้ว
-7. เรียกใช้ Shell Script that generates order data in the form of log files และทำหน้าที่เป็น source systems ของ speed layer
-8. Execute HiveQL ด้วยโค้ดใน create_hive_customers.sql และ create_hive_transactions.sql เพื่อสร้างตารางขึ้นมาใหม่ โดยอ่านข้อมูลจาก path ที่ระบุไว้
-9. เรียกใช้ Spark และรันไฟล์ spark_sql.py และ spark_streaming.py เพื่อทำความสะอาดและประมวลผลข้อมูล
-10. Execute HiveQL ด้วยโค้ดใน create_hive_loyalty.sql เพื่อสร้าง External Table ```loyalty``` ขึ้นผ่าน CLI
-TABLE (Internal Table) ใช้สำหรับสร้างตารางแบบภายในฐานข้อมูล เมื่อลบตารางออกจากระบบ ข้อมูลก็จะถูกลบไปด้วย
-ขณะที่ External Table ใช้สำหรับเชื่อมโยงกับข้อมูลภายนอก เมื่อลบตาราง ข้อมูลจะยังคงอยู่ในแหล่งเก็บข้อมูลภายนอก
-การทำงานของ external table คือเพียงแค่ link ไปยังตำแหน่งของข้อมูลจริงภายนอกเท่านั้น ข้อมูลจะไม่ถูกเก็บไว้ในฐานข้อมูล ดังนั้นจึงจำเป็นต้องสร้าง external table ก่อน เพื่อระบบทราบตำแหน่งและโครงสร้างของข้อมูลภายนอกนั้น จากนั้นจึงนำเข้าข้อมูลได้
-13. กำหนดสิทธิ์ให้ user cloudera สามารถ write ไฟล์ไปยัง /tmp/default/loyalty/ ได้
-By default, หากไม่กำหนดสิทธิ์การเข้าถึงไดเรกทอรี /tmp/default/loyalty จะขึ้น error แบบนี้ (ใส่รูป/error code) 
-ดังนั้นจึงต้องกำหนดสิทธิ์การเข้าถึงไดเรกทอรีให้ทุกคนสามารถอ่าน เขียน และดำเนินการได้ ด้วยคำสั่งด้านล่างนี้
+### Step 1: Create necessary files to start the project, including Shell Script, CONF File, and Python Source File, then push the files to the Git Repository
+- **Shell Script:** Written to create simulated purchase order data by randomly selecting customer IDs, beverage items, and timestamps. This data will be recorded in files in the directory (HDFS and HBase) every 30 seconds.
+- **CONF File:** Configure settings for Apache Flume by defining the channel, source, and sink for the agent. The source will receive files from the spool directory and send data to the channel connected to the sink to store data in HDFS and HBase.
+- **spark_sql.py:** This code retrieves customer data from the Hive table ```customers```, cleans and formats the data, and writes the data to HDFS using PySpark.
+- **spark_streaming.py:** This code reads streaming data from structured text files (log files) created by the shell script, processes the data, selects the desired columns, and writes the data in Parquet file format to HDFS using Spark Structured Streaming. New data will be continually appended to this file.
+### Step 2: Create a compute engine (VM) on GCP to install the Cloudera Docker Container for using Cloudera Manager and Cloudera Hue
+### Step 3: Install and running Cloudera Docker Container on Ubuntu 20.04, Configure Cloudera Manager, and Clone Git Repository as specified in the Cloudera installation with Docker.md file
+### Step 4: Import the CSV files that will serve as the source systems for the batch layer into HDFS
+### Step 5: Create paths for the Flume sink of HDFS as a directory and the Flume sink of HBase as a table
+### Step 6: Run the Flume agent to send data to HDFS and HBase
+Additionally, nohup & is used to prevent background processes from stopping when exiting the shell or closing the terminal
+### Step 7: Run the Shell Script that generates order data in the form of log files and serves as the source systems for the speed layer
+### Step 8: Execute HiveQL with the code in ```create_hive_customers.sql``` and ```create_hive_transactions.sql``` to create new tables by reading data from the specified paths.
+### Step 9: Run spark-submit to execute the ```spark_sql.py``` and ```spark_streaming.py``` files to clean and process the data
+### Step 10: Execute HiveQL with the code in ```create_hive_loyalty.sql``` to create an External Table ```loyalty``` through the CLI
+The functionality of an external table is to simply link to the location of the actual external data. The data is not stored within the database. Therefore, it is necessary to create an external table first to inform the system of the location and structure of the external data before importing the data.
+### Step 11. Grant the cloudera user write permissions to the /tmp/default/loyalty/ directory
+By default, if access permissions are not granted to the /tmp/default/loyalty/ directory, an error like this will occur 
+(ใส่รูป/error code) 
+Therefore, we need to grant read, write, and execute permissions to everyone for this directory using the following command:
 (รูป)
 **Warning! Using chmod 777 is bad practice because it grants unrestricted read, write, and execute permissions to everyone, which may create security vulnerabilities.**
-12. Execute HiveQL ด้วยโค้ดใน insert_hive_loyalty.sql เพื่อ insert ช้อมูลจากตาราง customers_cln และตาราง transactions_cln เข้าไปในตาราง ```loyalty```
-7. 
+### Step 12. Import the ```insert_hive_loyalty.sql``` file into HDFS. This file will retrieve data from the ```customers_cln``` and ```transactions_cln``` tables and insert it into the ```loyalty``` table
+### Step 13. Use Oozie to create workflows, then configure coordinators to trigger the workflow to run on specified dates and times
