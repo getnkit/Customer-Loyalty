@@ -29,19 +29,55 @@ This dataset consists of customer data from a beverage shop such as names, dates
 ### Step 2: Create a compute engine (VM) on GCP to install the Cloudera Docker Container for using Cloudera Manager and Cloudera Hue
 ### Step 3: Install and running Cloudera Docker Container on Ubuntu 20.04, Configure Cloudera Manager, and Clone Git Repository as specified in the Cloudera installation with Docker.md file
 ### Step 4: Import the CSV files that will serve as the source systems for the batch layer into HDFS
+```
+hadoop fs -mkdir /tmp/file
+hadoop fs -mkdir /tmp/file/sink
+hadoop fs -put /Customer-Loyalty/file/source/customer.csv /tmp/file/sink
+```
 ### Step 5: Create paths for the Flume sink of HDFS as a directory and the Flume sink of HBase as a table
+```
+hadoop fs -mkdir /tmp/flume
+hadoop fs -mkdir /tmp/flume/sink
+
+hbase shell
+create 'spooled_table', 'spool_cf'
+scan 'spooled_table'
+exit
+```
 ### Step 6: Run the Flume agent to send data to HDFS and HBase
+```
+nohup flume-ng agent -n tier1 -f /Customer-Loyalty/flume/source/flume_hdfs.conf &
+nohup flume-ng agent -n tier2 -f /Customer-Loyalty/flume/source/flume_hbase.conf &
+jobs -l
+```
 Additionally, nohup & is used to prevent background processes from stopping when exiting the shell or closing the terminal
 ### Step 7: Run the Shell Script that generates order data in the form of log files and serves as the source systems for the speed layer
-### Step 8: Execute HiveQL with the code in ```create_hive_customers.sql``` and ```create_hive_transactions.sql``` to create new tables by reading data from the specified paths.
+```
+nohup sh /Customer-Loyalty/flume/src_sys.sh &
+jobs -l
+```
+### Step 8: Execute HiveQL with the code in ```create_hive_customers.sql``` and ```create_hive_transactions.sql``` to create new internal tables through the Query Editor.
+Because performance is the priority, one should consider using an internal table, as it is stored and managed within the Hive Metastore, allowing for optimized data access and processing.
 ### Step 9: Run the spark-submit command to execute the ```spark_sql.py``` and ```spark_streaming.py``` files to clean and process the data
-### Step 10: Execute HiveQL with the code in ```create_hive_loyalty.sql``` to create an External Table ```loyalty``` through the CLI
-The functionality of an external table is to simply link to the location of the actual external data. The data is not stored within the database. Therefore, it is necessary to create an external table first to inform the system of the location and structure of the external data before importing the data.
-### Step 11. Grant the cloudera user write permissions to the /tmp/default/loyalty/ directory
-By default, if access permissions are not granted to the /tmp/default/loyalty/ directory, an error like this will occur 
-(ใส่รูป/error code) 
+```
+nohup spark-submit /Customer-Loyalty/spark_streaming/spark_streaming.py & 
+```
+### Step 10: Execute HiveQL with the code in ```create_hive_customers_cln.sql``` and ```create_hive_transactions_cln.sql``` to create new external tables through the Query Editor.
+Because the data is critical and of high importance, one should use an external table so that the underlying data files cannot be dropped even if the 'DROP TABLE' command is run accidentally by the user. This ensures the security of the data.
+### Step 11: Execute HiveQL with the code in ```create_hive_loyalty.sql``` to create a new external table through the CLI
+```
+hive -f /Customer-Loyalty/sql/create_hive_loyalty.sql
+```
+### Step 12. Grant the cloudera user write permissions to the /tmp/default/loyalty/ directory
+By default, if access permissions are not granted to the /tmp/default/loyalty/ directory, an error like this will occur:
+```
+Error while compiling statement: FAILED: RuntimeException Cannot create staging directory 'hdfs://quickstart.cloudera:8020/tmp/default/loyalty/data_dt=2024-05-23/.hive-staging_hive_2024-05-23_15-41-45_235_4724603800764227713-1': Permission denied: user=cloudera, access=WRITE, inode="/tmp/default/loyalty":root:supergroup:drwxr-xr-x
+```
 Therefore, we need to grant read, write, and execute permissions to everyone for this directory using the following command:
-(รูป)
+```
+hadoop fs -chmod 777 /tmp/default/loyalty
+```
 **Warning! Using chmod 777 is bad practice because it grants unrestricted read, write, and execute permissions to everyone, which may create security vulnerabilities.**
-### Step 12. Import the ```insert_hive_loyalty.sql``` file into HDFS. This file will retrieve data from the ```customers_cln``` and ```transactions_cln``` tables and insert it into the ```loyalty``` table
-### Step 13. Use Oozie to create workflows, then configure coordinators to trigger the workflow to run on specified dates and times
+### Step 13. Import the ```insert_hive_loyalty.sql``` file into HDFS. This file will retrieve data from the ```customers_cln``` and ```transactions_cln``` tables and insert it into the ```loyalty``` table
+Separating the Hive scripts for creating the ```loyalty``` table (Step 11) and the scripts for inserting data into the table provides flexibility in managing workflows, including the ability to independently schedule data insertion.
+### Step 14. Use Oozie to create workflows, then configure coordinators to trigger the workflow to run on specified dates and times
