@@ -34,7 +34,7 @@ This dataset consists of customer data from a beverage shop such as names, dates
 Additionally, nohup & is used to prevent background processes from stopping when exiting the shell or closing the terminal
 ### Step 7: Run the Shell Script that generates order data in the form of log files and serves as the source systems for the speed layer
 ### Step 8: Execute HiveQL with the code in ```create_hive_customers.sql``` and ```create_hive_transactions.sql``` to create new tables by reading data from the specified paths.
-### Step 9: Run spark-submit to execute the ```spark_sql.py``` and ```spark_streaming.py``` files to clean and process the data
+### Step 9: Run the spark-submit command to execute the ```spark_sql.py``` and ```spark_streaming.py``` files to clean and process the data
 ### Step 10: Execute HiveQL with the code in ```create_hive_loyalty.sql``` to create an External Table ```loyalty``` through the CLI
 The functionality of an external table is to simply link to the location of the actual external data. The data is not stored within the database. Therefore, it is necessary to create an external table first to inform the system of the location and structure of the external data before importing the data.
 ### Step 11. Grant the cloudera user write permissions to the /tmp/default/loyalty/ directory
