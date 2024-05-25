@@ -16,7 +16,7 @@ It consists of Hive and HBase. Hive is used to combine data from the batch layer
 
 To update the ```loyalty``` table with new data, utilize a workflow scheduling tool like Apache Oozie to create repeatable workflows. It schedules workflows to execute Hive scripts appending new data to the existing ```loyalty``` table structure, aligning with changes in the ```customers_cln``` and ```transactions_cln``` tables.
 ## About Dataset
-This dataset consists of customer data from a beverage shop such as names, dates of birth, and contact information. Additionally, this project generates real-time order data for each customer to simulate what orders each customer places and when. All of this data is collected for customer analysis and segmentation by calculating loyalty card point accumulation, in order to support an effective customer loyalty program by offering promotions to customers accordingly.
+This dataset consists of customer data from a beverage shop such as names, dates of birth, and contact information. Additionally, this project generates real-time order data for each customer to simulate what orders each customer places and when. All of this data is collected for customer analysis and segmentation by calculating loyalty card point accumulation, to support an effective customer loyalty program by offering targeted promotions to customers.
 ## Architecture
 ![image](https://github.com/getnkit/Customer-Loyalty/blob/31660049d2b3cc665834784ff39ad75971690cc2/images/Data%20Architecture.png)
 ## Implementation
