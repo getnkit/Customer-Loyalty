@@ -18,7 +18,7 @@ To update the ```loyalty``` table with new data, utilize a workflow scheduling t
 ## About Dataset
 This dataset consists of customer data from a beverage shop such as names, dates of birth, and contact information. Additionally, this project generates real-time order data for each customer to simulate what orders each customer places and when. All of this data is collected for customer analysis and segmentation by calculating loyalty card point accumulation, to support an effective customer loyalty program by offering targeted promotions to customers.
 ## Architecture
-![image](https://github.com/getnkit/Customer-Loyalty/blob/31660049d2b3cc665834784ff39ad75971690cc2/images/Data%20Architecture.png)
+![image](https://github.com/getnkit/Customer-Loyalty/blob/ffd4d63659e30be8a9291788431d956f31074db3/images/Data%20Architecture.png)
 ## Implementation
 ### Step 1: Create the necessary files to start the project, then push the files to the Git Repository
 - **Shell Script:** Written to create simulated purchase order data by randomly selecting customer IDs, beverage items, and timestamps. This data will be recorded in files in the directory (HDFS and HBase) every 30 seconds.
