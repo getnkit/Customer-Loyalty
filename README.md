@@ -31,7 +31,7 @@ This dataset consists of customer data from a beverage shop such as names, dates
 ```
 hadoop fs -mkdir /tmp/file
 hadoop fs -mkdir /tmp/file/sink
-hadoop fs -put /Customer-Loyalty/file/source/customer.csv /tmp/file/sink
+hadoop fs -put /<repository_name>/file/source/customer.csv /tmp/file/sink
 ```
 ### Step 5: Create paths for the Flume sink of HDFS as a directory and the Flume sink of HBase as a table
 ```
@@ -45,27 +45,27 @@ exit
 ```
 ### Step 6: Run the Flume agent to send data to HDFS and HBase
 ```
-nohup flume-ng agent -n tier1 -f /Customer-Loyalty/flume/source/flume_hdfs.conf &
-nohup flume-ng agent -n tier2 -f /Customer-Loyalty/flume/source/flume_hbase.conf &
+nohup flume-ng agent -n tier1 -f /<repository_name>/flume/source/flume_hdfs.conf &
+nohup flume-ng agent -n tier2 -f /<repository_name>/flume/source/flume_hbase.conf &
 jobs -l
 ```
 Additionally, nohup & is used to prevent background processes from stopping when exiting the shell or closing the terminal
 ### Step 7: Run the Shell Script that generates order data in the form of log files and serves as the source systems for the speed layer
 ```
-nohup sh /Customer-Loyalty/flume/src_sys.sh &
+nohup sh /<repository_name>/flume/src_sys.sh &
 jobs -l
 ```
 ### Step 8: Execute HiveQL with the code in ```create_hive_customers.sql``` and ```create_hive_transactions.sql``` to create new internal tables through the Query Editor.
 Because performance is the priority, one should consider using an internal table, as it is stored and managed within the Hive Metastore, allowing for optimized data access and processing.
 ### Step 9: Run the spark-submit command to execute the ```spark_sql.py``` and ```spark_streaming.py``` files to clean and process the data
 ```
-nohup spark-submit /Customer-Loyalty/spark_streaming/spark_streaming.py & 
+nohup spark-submit /<repository_name>/spark_streaming/spark_streaming.py & 
 ```
 ### Step 10: Execute HiveQL with the code in ```create_hive_customers_cln.sql``` and ```create_hive_transactions_cln.sql``` to create new external tables through the Query Editor.
 Because the data is critical and of high importance, one should use an external table so that the underlying data files cannot be dropped even if the 'DROP TABLE' command is run accidentally by the user. This ensures the security of the data.
 ### Step 11: Execute HiveQL with the code in ```create_hive_loyalty.sql``` to create a new external table through the CLI
 ```
-hive -f /Customer-Loyalty/sql/create_hive_loyalty.sql
+hive -f /<repository_name>/sql/create_hive_loyalty.sql
 ```
 ### Step 12. Grant the cloudera user write permissions to the /tmp/default/loyalty/ directory
 By default, if access permissions are not granted to the /tmp/default/loyalty/ directory, an error like this will occur:
@@ -79,7 +79,7 @@ hadoop fs -chmod 777 /tmp/default/loyalty
 **Warning! Using chmod 777 is bad practice because it grants unrestricted read, write, and execute permissions to everyone, which may create security vulnerabilities.**
 ### Step 13. Import the ```insert_hive_loyalty.sql``` file into HDFS. This file will retrieve data from the ```customers_cln``` and ```transactions_cln``` tables and insert it into the ```loyalty``` table
 ```
-hadoop fs -put /Customer-Loyalty/sql/insert_hive_loyalty.sql /tmp/file
+hadoop fs -put /<repository_name>/sql/insert_hive_loyalty.sql /tmp/file
 ```
 Separating the Hive scripts for creating the ```loyalty``` table (Step 11) and the scripts for inserting data into the table provides flexibility in managing workflows, including the ability to independently schedule data insertion.
 ### Step 14. Use Oozie to create workflows, then configure coordinators to trigger the workflow to run on specified dates and times
