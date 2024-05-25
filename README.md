@@ -78,5 +78,8 @@ hadoop fs -chmod 777 /tmp/default/loyalty
 ```
 **Warning! Using chmod 777 is bad practice because it grants unrestricted read, write, and execute permissions to everyone, which may create security vulnerabilities.**
 ### Step 13. Import the ```insert_hive_loyalty.sql``` file into HDFS. This file will retrieve data from the ```customers_cln``` and ```transactions_cln``` tables and insert it into the ```loyalty``` table
+```
+hadoop fs -put /Customer-Loyalty/sql/insert_hive_loyalty.sql /tmp/file
+```
 Separating the Hive scripts for creating the ```loyalty``` table (Step 11) and the scripts for inserting data into the table provides flexibility in managing workflows, including the ability to independently schedule data insertion.
 ### Step 14. Use Oozie to create workflows, then configure coordinators to trigger the workflow to run on specified dates and times
