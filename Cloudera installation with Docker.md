@@ -43,16 +43,17 @@ sudo docker run --hostname=quickstart.cloudera --privileged=true -it -p 8888:888
 ```
 sudo /home/cloudera/cloudera-manager --express && service ntpd start
 ```
-### Step 5: Use the VM's Public/External IP address to access Cloudera Manager through port 7180
-### Step 6: Go to the Hive service and set the configuration of Spark on YARN Service to none
+## Configure Cloudera Manager
+### Step 1: Use the VM's Public/External IP address to access Cloudera Manager through port 7180
+### Step 2: Go to the Hive service and set the configuration of Spark on YARN Service to none
 To simplify the system, as using Hive on Spark is more complex than using MapReduce due to the multiple components involved.
-### Step 7: Remove unused and unnecessary services, such as Spark and Key-Value Store Indexer Actions
+### Step 3: Remove unused and unnecessary services, such as Spark and Key-Value Store Indexer Actions
 Since the Spark version in this CDH installation is 1.x.x, which does not support Spark Structured Streaming, remove this service and use the Spark Local installation that is already available in the Docker container.
-### Step 8: Add Flume service and Select the set of dependencies for your new Flume: HBase, HDFS, and ZooKeeper
+### Step 4: Add Flume service and Select the set of dependencies for your new Flume: HBase, HDFS, and ZooKeeper
 * Selecting both HBase and HDFS as dependencies allows Flume to write data to both systems.
 * ZooKeeper is used for service distribution and leader election in Flume, which is necessary for its distributed operation.
-### Step 9: Start the cluster and wait until all services are in the all-up-and-running state
-### Step 10: Use the VM's Public/External IP address to access Cloudera HUE through port 8888
+### Step 5: Start the cluster and wait until all services are in the all-up-and-running state
+### Step 6: Use the VM's Public/External IP address to access Cloudera HUE through port 8888
 
 # Clone Git Repository
 Press Ctrl+P+Q to detach from the Docker container, leaving it running in the background
