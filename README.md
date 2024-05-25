@@ -21,7 +21,7 @@ This dataset consists of customer data from a beverage shop such as names, dates
 ## Architecture
 ![image](https://github.com/getnkit/Customer-Loyalty/blob/31660049d2b3cc665834784ff39ad75971690cc2/images/Data%20Architecture.png)
 ## Implementation
-### Step 1: Create necessary files to start the project, including Shell Script, CONF File, and Python Source File, then push the files to the Git Repository
+### Step 1: Create the necessary files to start the project, then push the files to the Git Repository
 - **Shell Script:** Written to create simulated purchase order data by randomly selecting customer IDs, beverage items, and timestamps. This data will be recorded in files in the directory (HDFS and HBase) every 30 seconds.
 - **CONF File:** Configure settings for Apache Flume by defining the channel, source, and sink for the agent. The source will receive files from the spool directory and send data to the channel connected to the sink to store data in HDFS and HBase.
 - **spark_sql.py:** This code retrieves customer data from the Hive table ```customers```, cleans and formats the data, and writes the data to HDFS using PySpark.
