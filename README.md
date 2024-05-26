@@ -57,7 +57,8 @@ Additionally, nohup & is used to prevent background processes from stopping when
 nohup sh /<repository_name>/flume/src_sys.sh &
 jobs -l
 ```
-Transaction logs are the data source. Flume receives new log entries from the Source and sends them to HDFS and HBase as Sinks.
+Transaction logs serve as the data source. Flume receives new log entries from the Source and sends them to HDFS and HBase as Sinks.
+
 ![image](https://github.com/getnkit/Customer-Loyalty/blob/c36a8fb0b3fd10fc4bfe295f8f30d871f28e94d6/images/Flume%20sink.jpg)
 ### Step 8: Execute HiveQL with the code in ```create_hive_customers.sql``` and ```create_hive_transactions.sql``` to create new internal tables through the Query Editor.
 Because performance is the priority, one should consider using an internal table, as it is stored and managed within the Hive Metastore, allowing for optimized data access and processing.
