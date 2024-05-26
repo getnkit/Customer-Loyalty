@@ -19,10 +19,14 @@ do
     done
    # Generate order timestamps
    timestamp=$(date +%s)
-   # Select random beverages and prices: ${orders[$RANDOM%${#orders[@]}]}
-   # Write order data to files
-   echo "$id|${orders[$RANDOM%${#orders[@]}]}|$timestamp" >> /Customer_Loyalty/flume/source/hdfs/order_${timestamp}.txt
-   echo "$id|${orders[$RANDOM%${#orders[@]}]}|$timestamp" >> /Customer_Loyalty/flume/source/hbase/order_${timestamp}.txt
+
+   # ${orders[$RANDOM%${#orders[@]}]}: Select random beverages and prices
+
+   # Write plain order data to text files (customer_id|beverage|timestamp)
+   # Choosing to use a text file format instead of a CSV file format, 
+   # because it is convenient and flexible for handling data or adapting to data structure changes in the future.
+   echo "$id|${orders[$RANDOM%${#orders[@]}]}|$timestamp" >> /Customer-Loyalty/flume/source/hdfs/order_${timestamp}.txt
+   echo "$id|${orders[$RANDOM%${#orders[@]}]}|$timestamp" >> /Customer-Loyalty/flume/source/hbase/order_${timestamp}.txt
    # Sleep for 30 seconds before starting the next iteration of the loop
    sleep 30
 done

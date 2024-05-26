@@ -1,20 +1,27 @@
-import sys
-from pyspark import SparkContext
-from pyspark.streaming import StreamingContext
-from pyspark.sql import Row, SparkSession
+# SparkSession was introduced in Spark 2.0 which is a unified API for working with structured data. 
+# It combines SparkContext , SQLContext, HiveContext, and StreamingContext.
+# My Docker container runs Spark 2.4.4.
+# from pyspark import SparkContext (it doesn't need to import)
+# from pyspark.streaming import StreamingContext (it doesn't need to import)
+from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
 
 # Create a SparkSession
 spark = SparkSession.builder.appName("strm_spark_job").enableHiveSupport().getOrCreate()
 
-# Set checkpoint location for streaming query
+# Setting a checkpoint location enhances fault tolerance by saving processing states and metadata, 
+# enabling accurate recovery of streaming queries in Apache Spark after interruptions or errors.
 spark.conf.set("spark.sql.streaming.checkpointLocation", "/tmp/checkpoints")
 
 # Define schema for streaming DataFrame
 userSchema = StructType().add("customer_id", "integer").add("customer_order", "string").add("order_timestamp", "integer")
 
-# Read streaming data from CSV files
+# Read streaming data from structured text files
+
+# Choosing to use the .csv() command for reading text files because the data has a delimited structure similar to CSV files, 
+# making it more convenient and efficient for managing data, 
+# including setting schemas and processing data further, compared to using .textFile().
 strmDF = spark \
     .readStream \
     .schema(userSchema) \
