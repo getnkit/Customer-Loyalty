@@ -68,6 +68,7 @@ nohup spark-submit /<repository_name>/spark_streaming/spark_streaming.py &
 ```
 ### Step 10: Execute HiveQL with the code in ```create_hive_customers_cln.sql``` and ```create_hive_transactions_cln.sql``` to create new external tables through the Query Editor.
 Because the data is critical and of high importance, one should use an external table so that the underlying data files cannot be dropped even if the 'DROP TABLE' command is run accidentally by the user. This ensures the security of the data.
+
 ![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/customers_cln%20table.png)
 ![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/transactions_cln%20table.png)
 ### Step 11: Execute HiveQL with the code in ```create_hive_loyalty.sql``` to create a new external table through the CLI
@@ -89,6 +90,7 @@ hadoop fs -chmod 777 /tmp/default/loyalty
 hadoop fs -put /<repository_name>/sql/insert_hive_loyalty.sql /tmp/file
 ```
 ![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/loyalty%20table.png)
+
 Separating the Hive scripts for creating the ```loyalty``` table (Step 11) and the scripts for inserting data into the table provides flexibility in managing workflows, including the ability to independently schedule data insertion.
 ### Step 14. Use Oozie to create workflows, then configure coordinators to trigger the workflow to run on specified dates and times
 ![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/Oozie%20Dashboard.png)
