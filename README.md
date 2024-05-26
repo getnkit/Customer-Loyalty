@@ -39,14 +39,13 @@ hadoop fs -put /<repository_name>/file/source/customer.csv /tmp/file/sink
 hadoop fs -mkdir /tmp/flume
 hadoop fs -mkdir /tmp/flume/sink
 ```
-![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/HDFS%20Flume%20sink.png)
 ```
 hbase shell
 create 'spooled_table', 'spool_cf'
 scan 'spooled_table'
 exit
 ```
-![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/HBase%20Flume%20sink.png)
+![image](https://github.com/getnkit/Customer-Loyalty/blob/c36a8fb0b3fd10fc4bfe295f8f30d871f28e94d6/images/Flume%20sink.jpg)
 ### Step 6: Run the Flume agent to send data to HDFS and HBase
 ```
 nohup flume-ng agent -n tier1 -f /<repository_name>/flume/source/flume_hdfs.conf &
