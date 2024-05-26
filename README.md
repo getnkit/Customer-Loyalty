@@ -27,6 +27,7 @@ This dataset consists of customer data from a beverage shop such as names, dates
 - **spark_streaming.py:** This code reads streaming data from structured text files (log files) created by the shell script, processes the data, selects the desired columns, and writes the data in Parquet file format to HDFS using Spark Structured Streaming. New data will be continually appended to this file.
 ### Step 2: Create a compute engine (VM) on GCP to install the Cloudera Docker Container for using Cloudera Manager and Cloudera Hue
 ### Step 3: Install and running Cloudera Docker Container on Ubuntu 20.04, Configure Cloudera Manager, and Clone Git Repository as specified in the Cloudera installation with Docker.md file
+![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/Cloudera%20Manager%20UI.png)
 ### Step 4: Import the CSV files that serve as the source systems for the batch layer into HDFS
 ```
 hadoop fs -mkdir /tmp/file
@@ -37,12 +38,15 @@ hadoop fs -put /<repository_name>/file/source/customer.csv /tmp/file/sink
 ```
 hadoop fs -mkdir /tmp/flume
 hadoop fs -mkdir /tmp/flume/sink
-
+```
+![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/HDFS%20Flume%20sink.png)
+```
 hbase shell
 create 'spooled_table', 'spool_cf'
 scan 'spooled_table'
 exit
 ```
+![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/HBase%20Flume%20sink.png)
 ### Step 6: Run the Flume agent to send data to HDFS and HBase
 ```
 nohup flume-ng agent -n tier1 -f /<repository_name>/flume/source/flume_hdfs.conf &
@@ -63,6 +67,8 @@ nohup spark-submit /<repository_name>/spark_streaming/spark_streaming.py &
 ```
 ### Step 10: Execute HiveQL with the code in ```create_hive_customers_cln.sql``` and ```create_hive_transactions_cln.sql``` to create new external tables through the Query Editor.
 Because the data is critical and of high importance, one should use an external table so that the underlying data files cannot be dropped even if the 'DROP TABLE' command is run accidentally by the user. This ensures the security of the data.
+![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/customers_cln%20table.png)
+![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/transactions_cln%20table.png)
 ### Step 11: Execute HiveQL with the code in ```create_hive_loyalty.sql``` to create a new external table through the CLI
 ```
 hive -f /<repository_name>/sql/create_hive_loyalty.sql
@@ -81,5 +87,7 @@ hadoop fs -chmod 777 /tmp/default/loyalty
 ```
 hadoop fs -put /<repository_name>/sql/insert_hive_loyalty.sql /tmp/file
 ```
+![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/loyalty%20table.png)
 Separating the Hive scripts for creating the ```loyalty``` table (Step 11) and the scripts for inserting data into the table provides flexibility in managing workflows, including the ability to independently schedule data insertion.
 ### Step 14. Use Oozie to create workflows, then configure coordinators to trigger the workflow to run on specified dates and times
+![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/Oozie%20Dashboard.png)
