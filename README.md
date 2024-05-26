@@ -45,7 +45,6 @@ create 'spooled_table', 'spool_cf'
 scan 'spooled_table'
 exit
 ```
-![image](https://github.com/getnkit/Customer-Loyalty/blob/c36a8fb0b3fd10fc4bfe295f8f30d871f28e94d6/images/Flume%20sink.jpg)
 ### Step 6: Run the Flume agent to send data to HDFS and HBase
 ```
 nohup flume-ng agent -n tier1 -f /<repository_name>/flume/source/flume_hdfs.conf &
@@ -58,6 +57,8 @@ Additionally, nohup & is used to prevent background processes from stopping when
 nohup sh /<repository_name>/flume/src_sys.sh &
 jobs -l
 ```
+Transaction logs are the data source. Flume receives new log entries from the Source and sends them to HDFS and HBase as Sinks.
+![image](https://github.com/getnkit/Customer-Loyalty/blob/c36a8fb0b3fd10fc4bfe295f8f30d871f28e94d6/images/Flume%20sink.jpg)
 ### Step 8: Execute HiveQL with the code in ```create_hive_customers.sql``` and ```create_hive_transactions.sql``` to create new internal tables through the Query Editor.
 Because performance is the priority, one should consider using an internal table, as it is stored and managed within the Hive Metastore, allowing for optimized data access and processing.
 ### Step 9: Run the spark-submit command to execute the ```spark_sql.py``` and ```spark_streaming.py``` files to clean and process the data
