@@ -27,7 +27,7 @@ This dataset consists of customer data from a beverage shop such as names, dates
 - **spark_streaming.py:** This code reads streaming data from structured text files (log files) created by the shell script, processes the data, selects the desired columns, and writes the data in Parquet file format to HDFS using Spark Structured Streaming. New data will be continually appended to this file.
 ### Step 2: Create a compute engine (VM) on GCP to install the Cloudera Docker Container for using Cloudera Manager and Cloudera Hue
 ### Step 3: Install and running Cloudera Docker Container on Ubuntu 20.04, Configure Cloudera Manager, and Clone Git Repository as specified in the Cloudera installation with Docker.md file
-### Step 4: Import the CSV files that will serve as the source systems for the batch layer into HDFS
+### Step 4: Import the CSV files that serve as the source systems for the batch layer into HDFS
 ```
 hadoop fs -mkdir /tmp/file
 hadoop fs -mkdir /tmp/file/sink
