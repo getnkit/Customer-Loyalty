@@ -59,7 +59,7 @@ Since the Spark version in this CDH installation is 1.x.x, which does not suppor
 Press Ctrl+P+Q to detach from the Docker container, leaving it running in the background
 Clone Git Repository
 ```
-git clone https://github.com/getnkit/Customer-Loyalty.git
+git clone https://github.com/getnkit/<repository-name>.git
 ```
 Check the container ID of Cloudera:
 ```
@@ -67,7 +67,7 @@ docker container ls
 ```
 Copy the files from the Git repository into the Cloudera Docker container:
 ```
-docker cp Customer-Loyalty <container_id>:/
+docker cp <repository-name> <container_id>:/
 ```
 Re-enter or re-attach to the container:
 ```
