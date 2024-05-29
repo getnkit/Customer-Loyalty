@@ -1,6 +1,6 @@
-# Customer-Loyalty (Hadoop)
+# Data Pipelines on Hadoop for Customer Loyalty Program
 ## Project Overview
-This project focuses on building a data pipeline using the Hadoop Ecosystem following the design pattern of the Lambda Architecture. This architecture enables event-driven processing when handling big datasets as it processes large data sets in the batch layer and real-time data in the speed layer.
+This project focuses on building data pipelines using the Hadoop Ecosystem following the design pattern of the Lambda Architecture. This architecture enables event-driven processing when handling big datasets as it processes large data sets in the batch layer and real-time data in the speed layer.
 
 **Batch Layer**
 
@@ -39,14 +39,12 @@ hadoop fs -put /<repository_name>/file/source/customer.csv /tmp/file/sink
 hadoop fs -mkdir /tmp/flume
 hadoop fs -mkdir /tmp/flume/sink
 ```
-![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/HDFS%20Flume%20sink.png)
 ```
 hbase shell
 create 'spooled_table', 'spool_cf'
 scan 'spooled_table'
 exit
 ```
-![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/HBase%20Flume%20sink.png)
 ### Step 6: Run the Flume agent to send data to HDFS and HBase
 ```
 nohup flume-ng agent -n tier1 -f /<repository_name>/flume/source/flume_hdfs.conf &
@@ -59,6 +57,9 @@ Additionally, nohup & is used to prevent background processes from stopping when
 nohup sh /<repository_name>/flume/src_sys.sh &
 jobs -l
 ```
+Transaction logs serve as the data source. Flume receives new log entries from the Source and sends them to HDFS and HBase as Sinks.
+
+![image](https://github.com/getnkit/Customer-Loyalty/blob/c36a8fb0b3fd10fc4bfe295f8f30d871f28e94d6/images/Flume%20sink.jpg)
 ### Step 8: Execute HiveQL with the code in ```create_hive_customers.sql``` and ```create_hive_transactions.sql``` to create new internal tables through the Query Editor.
 Because performance is the priority, one should consider using an internal table, as it is stored and managed within the Hive Metastore, allowing for optimized data access and processing.
 ### Step 9: Run the spark-submit command to execute the ```spark_sql.py``` and ```spark_streaming.py``` files to clean and process the data
@@ -67,6 +68,7 @@ nohup spark-submit /<repository_name>/spark_streaming/spark_streaming.py &
 ```
 ### Step 10: Execute HiveQL with the code in ```create_hive_customers_cln.sql``` and ```create_hive_transactions_cln.sql``` to create new external tables through the Query Editor.
 Because the data is critical and of high importance, one should use an external table so that the underlying data files cannot be dropped even if the 'DROP TABLE' command is run accidentally by the user. This ensures the security of the data.
+
 ![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/customers_cln%20table.png)
 ![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/transactions_cln%20table.png)
 ### Step 11: Execute HiveQL with the code in ```create_hive_loyalty.sql``` to create a new external table through the CLI
@@ -88,6 +90,7 @@ hadoop fs -chmod 777 /tmp/default/loyalty
 hadoop fs -put /<repository_name>/sql/insert_hive_loyalty.sql /tmp/file
 ```
 ![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/loyalty%20table.png)
+
 Separating the Hive scripts for creating the ```loyalty``` table (Step 11) and the scripts for inserting data into the table provides flexibility in managing workflows, including the ability to independently schedule data insertion.
 ### Step 14. Use Oozie to create workflows, then configure coordinators to trigger the workflow to run on specified dates and times
 ![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/Oozie%20Dashboard.png)
