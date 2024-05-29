@@ -18,7 +18,7 @@ To update the ```loyalty``` table with new data, utilize a workflow scheduling t
 ## About Dataset
 This dataset consists of customer data from a beverage shop such as names, dates of birth, and contact information. Additionally, this project generates real-time order data for each customer to simulate what orders each customer places and when. All of this data is collected for customer analysis and segmentation by calculating loyalty card point accumulation, to support an effective customer loyalty program by offering targeted promotions to customers.
 ## Architecture
-![image](https://github.com/getnkit/Customer-Loyalty/blob/ffd4d63659e30be8a9291788431d956f31074db3/images/Data%20Architecture.png)
+![image](https://github.com/getnkit/Data-Pipelines-on-Hadoop-for-Customer-Loyalty-Program/blob/deb32df61f37251d234d67f38eb3c9e70d54c053/images/Data%20Architecture.png)
 ## Implementation
 ### Step 1: Create the necessary files to start the project, then push the files to the Git Repository
 - **Shell Script:** Written to create simulated purchase order data by randomly selecting customer IDs, beverage items, and timestamps. This data will be recorded in files in the directory (HDFS and HBase) every 30 seconds.
@@ -75,7 +75,7 @@ Because the data is critical and of high importance, one should use an external 
 ```
 hive -f /<repository_name>/sql/create_hive_loyalty.sql
 ```
-### Step 12. Grant the cloudera user write permissions to the /tmp/default/loyalty/ directory
+### Step 12: Grant the cloudera user write permissions to the /tmp/default/loyalty/ directory
 By default, if access permissions are not granted to the /tmp/default/loyalty/ directory, an error like this will occur:
 ```
 Error while compiling statement: FAILED: RuntimeException Cannot create staging directory 'hdfs://quickstart.cloudera:8020/tmp/default/loyalty/data_dt=2024-05-23/.hive-staging_hive_2024-05-23_15-41-45_235_4724603800764227713-1': Permission denied: user=cloudera, access=WRITE, inode="/tmp/default/loyalty":root:supergroup:drwxr-xr-x
@@ -85,12 +85,14 @@ Therefore, we need to grant read, write, and execute permissions to everyone for
 hadoop fs -chmod 777 /tmp/default/loyalty
 ```
 **Warning! Using chmod 777 is bad practice because it grants unrestricted read, write, and execute permissions to everyone, which may create security vulnerabilities.**
-### Step 13. Import the ```insert_hive_loyalty.sql``` file into HDFS. This file will retrieve data from the ```customers_cln``` and ```transactions_cln``` tables and insert it into the ```loyalty``` table
+### Step 13: Import the ```insert_hive_loyalty.sql``` file into HDFS. This file will retrieve data from the ```customers_cln``` and ```transactions_cln``` tables and insert it into the ```loyalty``` table
 ```
 hadoop fs -put /<repository_name>/sql/insert_hive_loyalty.sql /tmp/file
 ```
 ![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/loyalty%20table.png)
 
 Separating the Hive scripts for creating the ```loyalty``` table (Step 11) and the scripts for inserting data into the table provides flexibility in managing workflows, including the ability to independently schedule data insertion.
-### Step 14. Use Oozie to create workflows, then configure coordinators to trigger the workflow to run on specified dates and times
+### Step 14: Use Oozie to create workflows, then configure coordinators to trigger the workflow to run on specified dates and times
 ![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/Oozie%20Dashboard.png)
+### Step 15: Use Cloudera Manager to monitor the health and performance of the cluster components
+![image](https://github.com/getnkit/Data-Pipelines-on-Hadoop-for-Customer-Loyalty-Program/blob/deb32df61f37251d234d67f38eb3c9e70d54c053/images/Services%20Monitoring.png)
