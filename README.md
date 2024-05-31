@@ -28,7 +28,7 @@ This dataset consists of customer data from a beverage shop such as names, dates
 ### Step 2: Create a compute engine (VM) on GCP to install the Cloudera Docker Container for using Cloudera Manager and Cloudera Hue
 ![image](https://github.com/getnkit/Data-Pipelines-on-Hadoop-for-Customer-Loyalty-Program/blob/d8829ec3149796b45ae10980c83eaa1716d4fe39/images/Machine%20configuration.png)
 ![image](https://github.com/getnkit/Data-Pipelines-on-Hadoop-for-Customer-Loyalty-Program/blob/d8829ec3149796b45ae10980c83eaa1716d4fe39/images/Firewalls.png)
-![image](https://github.com/getnkit/Data-Pipelines-on-Hadoop-for-Customer-Loyalty-Program/blob/d8829ec3149796b45ae10980c83eaa1716d4fe39/images/Machine%20configuration.png)
+![image](https://github.com/getnkit/Data-Pipelines-on-Hadoop-for-Customer-Loyalty-Program/blob/d0c06c9d4662c89aa74859101bddf7bfb0699d3a/images/Boot%20disk.png)
 ### Step 3: Install and running Cloudera Docker Container on Ubuntu 20.04, Configure Cloudera Manager, and Clone Git Repository as specified in the ```Cloudera installation with Docker.md``` file
 ![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/Cloudera%20Manager%20UI.png)
 ### Step 4: Import the CSV files that serve as the source systems for the batch layer into HDFS
