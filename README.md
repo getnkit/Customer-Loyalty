@@ -27,7 +27,9 @@ This dataset consists of customer data from a beverage shop such as names, dates
 - **spark_streaming.py:** This code reads streaming data from structured text files (log files) created by the shell script, processes the data, selects the desired columns, and writes the data in Parquet file format to HDFS using Spark Structured Streaming. New data will be continually appended to this file.
 ### Step 2: Create a compute engine (VM) on GCP to install the Cloudera Docker Container for using Cloudera Manager and Cloudera Hue
 ![image](https://github.com/getnkit/Data-Pipelines-on-Hadoop-for-Customer-Loyalty-Program/blob/2c5563da36563962d6725f3a3ebbf8374cee16bd/images/Machine%20configuration.png)
+
 ![image](https://github.com/getnkit/Data-Pipelines-on-Hadoop-for-Customer-Loyalty-Program/blob/2c5563da36563962d6725f3a3ebbf8374cee16bd/images/Firewalls.png)
+
 ![image](https://github.com/getnkit/Data-Pipelines-on-Hadoop-for-Customer-Loyalty-Program/blob/2c5563da36563962d6725f3a3ebbf8374cee16bd/images/Boot%20disk.png)
 ### Step 3: Install and running Cloudera Docker Container on Ubuntu 20.04, Configure Cloudera Manager, and Clone Git Repository as specified in the ```Cloudera installation with Docker.md``` file
 ![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/Cloudera%20Manager%20UI.png)
@@ -73,6 +75,7 @@ nohup spark-submit /<repository_name>/spark_streaming/spark_streaming.py &
 Because the data is critical and of high importance, one should use an external table so that the underlying data files cannot be dropped even if the 'DROP TABLE' command is run accidentally by the user. This ensures the security of the data.
 
 ![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/customers_cln%20table.png)
+
 ![image](https://github.com/getnkit/Customer-Loyalty/blob/eb2c95db1a88358fd652ab3daca16f21c0996a61/images/transactions_cln%20table.png)
 ### Step 11: Execute HiveQL with the code in ```create_hive_loyalty.sql``` to create a new external table through the CLI
 ```
