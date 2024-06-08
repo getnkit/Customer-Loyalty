@@ -1,6 +1,6 @@
-# Data Pipelines on Hadoop for Customer Loyalty Program
+# Batch and Real-Time Data Pipelines on Hadoop for Customer Loyalty Program
 ## Project Overview
-This project focuses on building data pipelines using the Hadoop Ecosystem following the design pattern of the Lambda Architecture. This architecture enables event-driven processing when handling big datasets as it processes large data sets in the batch layer and real-time data in the speed layer.
+This project focuses on building data pipelines using the Hadoop Ecosystem following the design pattern of the Lambda Architecture. This architecture enables event-driven processing when handling big datasets as it processes large datasets in the batch layer and real-time data in the speed layer.
 
 **Batch Layer**
 
